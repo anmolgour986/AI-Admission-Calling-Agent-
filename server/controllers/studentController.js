@@ -1,4 +1,5 @@
 const Student = require("../models/Student");
+const CallHistory = require("../models/CallHistory");
 const xlsx = require("xlsx");
 const fs = require("fs");
 
@@ -150,11 +151,107 @@ const uploadStudents = async (req, res) => {
     });
   }
 };
+// ==============================
+// Get Next Pending Student
+// ==============================
+
+const getNextStudent = async (req, res) => {
+  
+  try {
+
+    const student = await Student.findOne({
+      status: "Pending"
+    }).sort({ createdAt: 1 });
+
+    if (!student) {
+      return res.status(404).json({
+        success: false,
+        message: "No Pending students found"
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: student
+    });
+
+  } catch (error) {
+
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+
+  }
+};
+// ==============================
+// Complete AI Call
+// ==============================
+const completeCall = async (req, res) => {
+  try {
+    const {
+      status,
+      summary,
+      notes,
+      duration,
+      transcript,
+    } = req.body;
+
+    const student = await Student.findById(req.params.id);
+
+    if (!student) {
+      return res.status(404).json({
+        success: false,
+        message: "Student not found",
+      });
+    }
+
+    // Update Student
+    student.status = status || student.status;
+    student.summary = summary || "";
+    student.notes = notes || "";
+    student.lastCall = new Date();
+    student.callCount += 1;
+
+    await student.save();
+
+    // Save Call History
+    await CallHistory.create({
+      student: student._id,
+      studentName: student.name,
+      phone: student.phone,
+      course: student.course,
+      status: student.status,
+      duration: duration || 0,
+      summary: summary || "",
+      transcript: transcript || [],
+      notes: notes || "",
+      callDate: new Date(),
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Call completed successfully",
+      data: student,
+    });
+
+  } catch (error) {
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+
+  }
+};
+
 
 module.exports = {
   createStudent,
   getStudents,
   updateStudent,
+  completeCall,
   deleteStudent,
   uploadStudents,
+  getNextStudent,
 };

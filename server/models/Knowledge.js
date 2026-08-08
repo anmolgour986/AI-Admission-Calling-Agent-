@@ -8,12 +8,12 @@ const knowledgeSchema = new mongoose.Schema(
       trim: true,
     },
 
-    originalName: {
+    filename: {
       type: String,
       required: true,
     },
 
-    fileName: {
+    originalname: {
       type: String,
       required: true,
     },
@@ -28,9 +28,15 @@ const knowledgeSchema = new mongoose.Schema(
       required: true,
     },
 
-    fileSize: {
+    size: {
       type: Number,
-      default: 0,
+      required: true,
+    },
+
+    // ⭐ NEW FIELD
+    content: {
+      type: String,
+      default: "",
     },
   },
   {
@@ -38,7 +44,4 @@ const knowledgeSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model(
-  "Knowledge",
-  knowledgeSchema
-);
+module.exports = mongoose.model("Knowledge", knowledgeSchema);

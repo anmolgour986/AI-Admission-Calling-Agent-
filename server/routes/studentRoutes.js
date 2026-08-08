@@ -1,4 +1,6 @@
 const express = require("express");
+console.log("✅ studentRoutes loaded");
+
 const router = express.Router();
 
 const upload = require("../middleware/uploadMiddleware");
@@ -9,7 +11,14 @@ const {
   updateStudent,
   uploadStudents,
   deleteStudent,
+  getNextStudent,
+  completeCall,
 } = require("../controllers/studentController");
+
+// ==============================
+// Get Next Pending Student
+// ==============================
+router.get("/next", getNextStudent);
 
 // ==============================
 // Get All Students
@@ -29,11 +38,18 @@ router.post(
   upload.single("file"),
   uploadStudents
 );
+// ==============================
+// Complete AI Call
+// ==============================
+
+router.put("/:id/call-complete", completeCall);
+
 
 // ==============================
 // Update Student
 // ==============================
 router.put("/:id", updateStudent);
+
 
 // ==============================
 // Delete Student

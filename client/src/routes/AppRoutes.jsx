@@ -11,11 +11,11 @@ import Register from "../pages/Register";
 import Dashboard from "../pages/Dashboard";
 import Students from "../pages/Students";
 import AddStudent from "../pages/AddStudent";
-import KnowledgeBase from "../pages/KnowledgeBase";
+import Knowledge from "../pages/Knowledge";
 import VoiceAgent from "../pages/VoiceAgent";
 import CallHistory from "../pages/CallHistory";
 
-// 404
+// 404 Page
 import NotFound from "../pages/NotFound";
 
 const AppRoutes = () => {
@@ -29,24 +29,51 @@ const AppRoutes = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
 
-        {/* Dashboard Layout */}
+        {/* Protected Routes */}
         <Route element={<MainLayout />}>
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/students" element={<Students />} />
-          <Route path="/students/add" element={<AddStudent />} />
-          <Route path="/knowledge-base" element={<KnowledgeBase />} />
-          <Route path="/voice-agent" element={<VoiceAgent />} />
-          <Route path="/call-history" element={<CallHistory />} />
-          <Route path="/students/edit/:id" element={<AddStudent />} />
-          import KnowledgeBase from "../pages/KnowledgeBase";
+
+          <Route
+            path="/dashboard"
+            element={<Dashboard />}
+          />
+
+          <Route
+            path="/students"
+            element={<Students />}
+          />
+
+          <Route
+            path="/students/add"
+            element={<AddStudent />}
+          />
+
+          <Route
+            path="/students/edit/:id"
+            element={<AddStudent />}
+          />
+
+          <Route
+            path="/knowledge-base"
+            element={<Knowledge />}
+          />
+
+          <Route
+            path="/voice-agent"
+            element={<VoiceAgent />}
+          />
+
+          <Route
+            path="/call-history"
+            element={<CallHistory />}
+          />
+
         </Route>
 
         {/* 404 */}
-        <Route path="*" element={<NotFound />} />
         <Route
-  path="/knowledge"
-  element={<KnowledgeBase />}
-/>
+          path="*"
+          element={<NotFound />}
+        />
 
       </Routes>
     </BrowserRouter>

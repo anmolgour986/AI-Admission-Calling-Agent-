@@ -1,16 +1,34 @@
 const express = require("express");
 const router = express.Router();
 
+const upload = require("../middleware/knowledgeUploadMiddleware");
+
 const {
-  createKnowledge,
-  getKnowledge,
-  deleteKnowledge,
+  uploadKnowledge,
+  getKnowledgeFiles,
+  deleteKnowledgeFile,
+  getKnowledgeContent,
 } = require("../controllers/knowledgeController");
 
-router.get("/", getKnowledge);
+// ======================================
+// Get All Knowledge Files
+// ======================================
+router.get("/", getKnowledgeFiles);
 
-router.post("/", createKnowledge);
+// ======================================
+// Upload Knowledge File
+// ======================================
+router.get("/content", getKnowledgeContent);
 
-router.delete("/:id", deleteKnowledge);
+router.post(
+  "/upload",
+  upload.single("file"),
+  uploadKnowledge
+);
+
+// ======================================
+// Delete Knowledge File
+// ======================================
+router.delete("/:id", deleteKnowledgeFile);
 
 module.exports = router;
