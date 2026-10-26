@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
-import UploadKnowledge from "../components/knowledge/UploadKnowledge";
+import UploadKnowledge from "../components/Knowledge/UploadKnowledge";
 
 function Knowledge() {
   const [files, setFiles] = useState([]);
