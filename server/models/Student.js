@@ -27,7 +27,6 @@ const studentSchema = new mongoose.Schema(
       lowercase: true,
     },
 
-    // Admission Status
     status: {
       type: String,
       enum: [
@@ -41,45 +40,44 @@ const studentSchema = new mongoose.Schema(
       default: "Pending",
     },
 
-    // AI Agent Notes
     notes: {
       type: String,
       default: "",
       trim: true,
     },
 
-    // Last Call Date
     lastCall: {
       type: Date,
       default: null,
     },
 
-    // Number of Calls
     callCount: {
       type: Number,
       default: 0,
     },
 
-    // Assigned Agent
     assignedAgent: {
       type: String,
       default: "",
     },
 
-    // Call Recording URL (future use)
     recording: {
       type: String,
       default: "",
     },
 
-    // AI Call Summary
     summary: {
       type: String,
       default: "",
     },
 
-    // Follow-up Date
     followUpDate: {
+      type: Date,
+      default: null,
+    },
+
+    // Date admission was confirmed
+    admissionConfirmedAt: {
       type: Date,
       default: null,
     },

@@ -37,40 +37,48 @@ function VoiceAgent() {
 
 
   useEffect(() => {
-if (!vapi.current) return;
+  if (!vapi.current) return;
+
   vapi.current.on("call-start", () => {
+    console.log("✅ VAPI CALL STARTED");
+
     setCallStatus("Connected");
     setTimer(0);
   });
 
   vapi.current.on("call-end", () => {
+    console.log("📞 VAPI CALL ENDED");
+
     setCallStatus("Completed");
     setSummary("AI call completed successfully.");
   });
 
- vapi.current.on("message", (message) => {
-  console.log(message);
+  vapi.current.on("error", (error) => {
+    console.error("❌ VAPI ERROR:", error);
+  });
 
-  if (message.type !== "transcript") return;
+  vapi.current.on("message", (message) => {
+    console.log("📩 VAPI MESSAGE:", message);
 
-  // Sirf FINAL transcript dikhana hai
-  if (message.transcriptType !== "final") return;
+    if (message.type !== "transcript") return;
 
-  const speaker =
-    message.role === "assistant" ? "AI" : "You";
+    if (message.transcriptType !== "final") return;
 
-  const text = message.transcript?.trim();
+    const speaker =
+      message.role === "assistant" ? "AI" : "You";
 
-  if (!text) return;
+    const text = message.transcript?.trim();
 
-  setTranscript((prev) => [
-    ...prev,
-    {
-      speaker,
-      message: text,
-    },
-  ]);
-}); 
+    if (!text) return;
+
+    setTranscript((prev) => [
+      ...prev,
+      {
+        speaker,
+        message: text,
+      },
+    ]);
+  });
 
   return () => {
     if (vapi.current) {
@@ -128,14 +136,26 @@ const startCall = async () => {
     setTranscript([]);
     setSummary("");
 
-    // Fetch uploaded knowledge
     const res = await api.get("/knowledge/content");
 
-    const knowledge = res.data.knowledge || "No knowledge available.";
+    const knowledge =
+      res.data.knowledge || "No knowledge available.";
 
-    await vapi.current.start(import.meta.env.VITE_VAPI_ASSISTANT_ID);
+    console.log("📚 Knowledge sent to Vapi:", knowledge);
+
+    await vapi.current.start(
+      import.meta.env.VITE_VAPI_ASSISTANT_ID,
+      {
+        variableValues: {
+          knowledge: knowledge,
+        },
+      }
+    );
+
+    console.log("🚀 Vapi start() called successfully");
+
   } catch (err) {
-    console.error(err);
+    console.error("❌ Start Call Error:", err);
   }
 };
   // ===========================

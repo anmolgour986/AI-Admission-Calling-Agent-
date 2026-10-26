@@ -48,9 +48,36 @@ const getStudents = async (req, res) => {
 // ==============================
 const updateStudent = async (req, res) => {
   try {
+    const updates = { ...req.body };
+
+    // Set confirmation date when admission is confirmed.
+    if (
+      updates.status === "Admission Confirmed" &&
+      !updates.admissionConfirmedAt
+    ) {
+      const existingStudent = await Student.findById(
+        req.params.id
+      );
+
+      if (!existingStudent) {
+        return res.status(404).json({
+          success: false,
+          message: "Student not found",
+        });
+      }
+
+      updates.admissionConfirmedAt =
+        existingStudent.admissionConfirmedAt || new Date();
+    }
+
+    // Clear the date if the admission status is reversed.
+    if (updates.status && updates.status !== "Admission Confirmed") {
+      updates.admissionConfirmedAt = null;
+    }
+
     const student = await Student.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      updates,
       {
         new: true,
         runValidators: true,
@@ -195,6 +222,7 @@ const completeCall = async (req, res) => {
       notes,
       duration,
       transcript,
+      callOutcome,
     } = req.body;
 
     const student = await Student.findById(req.params.id);
